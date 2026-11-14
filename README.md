@@ -14,7 +14,7 @@ The WordPress.org readme is [`readme.txt`](readme.txt).
 - Add, edit and delete custom order statuses under **WooCommerce → Order Status Manager**.
 - Choose where each status sits in the status list.
 - Colour per status in the orders list; text colour adjusts for readability.
-- Email per status, using the WooCommerce email template, with order details and placeholders (`{customer_name}`, `{order_number}`, `{order_date}`, `{site_title}`). Send to customer, admin or both, plus CC. Managed under **WooCommerce → Settings → Emails**.
+- Email per status, using the WooCommerce email template, with order details and placeholders (`{customer_name}`, `{order_number}`, `{order_date}`, `{site_title}`). Send to customer, admin or both, plus CC. Subject, heading and on/off are shared in one **Custom order status** entry under **WooCommerce → Settings → Emails** (use `{status}`).
 - Per-status rules: counts as paid, allow downloads, reduce stock (once), keep editable, one-click action button.
 - Automatic move after N hours/days to another status (Action Scheduler; skipped if the order moved on; adds a note).
 - Customer description shown on the order page.

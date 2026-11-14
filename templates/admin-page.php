@@ -173,7 +173,7 @@ $wpb_osm_bool = array(
 				<th><label for="wpb-osm-email"><?php esc_html_e( 'Email', 'exivon-custom-order-statuses-for-woocommerce' ); ?></label></th>
 				<td>
 					<textarea id="wpb-osm-email" class="large-text" rows="5" name="status[email]"><?php echo esc_textarea( $wpb_osm_form['email'] ); ?></textarea>
-					<p class="description"><?php esc_html_e( 'Leave empty for no email. Placeholders: {customer_name}, {order_number}, {order_date}, {site_title}. Subject, heading and on/off are under WooCommerce → Settings → Emails.', 'exivon-custom-order-statuses-for-woocommerce' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Leave empty for no email. Placeholders: {customer_name}, {order_number}, {order_date}, {site_title}. Subject, heading and on/off for all status emails are under WooCommerce → Settings → Emails → Custom order status.', 'exivon-custom-order-statuses-for-woocommerce' ); ?></p>
 					<p>
 						<label for="wpb-osm-recipient"><?php esc_html_e( 'Send to', 'exivon-custom-order-statuses-for-woocommerce' ); ?></label>
 						<select id="wpb-osm-recipient" name="status[recipient]">

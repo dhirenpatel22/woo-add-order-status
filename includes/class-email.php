@@ -34,9 +34,9 @@ class Email {
 		add_filter(
 			'woocommerce_email_classes',
 			function ( $emails ) use ( $manager ) {
-				require_once WPB_OSM_PATH . 'includes/class-status-email.php';
-				foreach ( $manager->get_statuses() as $status ) {
-					$emails[ 'WPB_OSM_Status_Email_' . $status['key'] ] = new Status_Email( $status );
+				if ( $manager->get_statuses() ) {
+					require_once WPB_OSM_PATH . 'includes/class-status-email.php';
+					$emails['WPB_OSM_Status_Email'] = new Status_Email( $manager );
 				}
 				return $emails;
 			}

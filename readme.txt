@@ -38,7 +38,7 @@ Add statuses such as "Awaiting Shipment" or "Ready for Collection" to your WooCo
 * One email per status, sent with your WooCommerce email template and order details.
 * Send to the customer, the store admin, or both, plus CC addresses.
 * Placeholders: {customer_name}, {order_number}, {order_date}, {site_title}.
-* Subject, heading and on/off under WooCommerce → Settings → Emails, like WooCommerce's own emails.
+* One "Custom order status" entry under WooCommerce → Settings → Emails for subject, heading, on/off and preview. Use {status} for the status name.
 
 **Checkout**
 
@@ -84,7 +84,7 @@ Users with the `manage_woocommerce` capability (shop managers and administrators
 2. Order Status Manager: every status with its rules and order count.
 3. Editing a status: position, colour, customer description, rules, automatic move and email.
 4. The customer's order page showing the status and its description.
-5. Each status email has its own settings under WooCommerce → Settings → Emails.
+5. One "Custom order status" email under WooCommerce → Settings → Emails, with live preview of your status message.
 6. Choose the status new orders get for each payment method.
 
 == Changelog ==
@@ -104,6 +104,7 @@ Users with the `manage_woocommerce` capability (shop managers and administrators
 * New: automatic move to another status after a set number of hours or days.
 * New: customer-facing status description on the order page.
 * New: email recipients (customer, admin or both) and CC addresses.
+* New: one "Custom order status" email in WooCommerce → Settings → Emails (shared subject/heading with {status}); preview and test emails work.
 * New: status after checkout per payment method.
 * New: HPOS and block checkout compatibility declared; requires WooCommerce; uninstall cleanup.
 * Tested with WordPress 7.1 and WooCommerce 11.3.

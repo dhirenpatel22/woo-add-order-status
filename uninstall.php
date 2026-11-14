@@ -14,3 +14,8 @@ foreach ( (array) get_option( 'wpb_osm_statuses', array() ) as $wpb_osm_status )
 	}
 }
 delete_option( 'wpb_osm_statuses' );
+delete_option( 'wpb_osm_gateway_statuses' );
+
+if ( function_exists( 'as_unschedule_all_actions' ) ) {
+	as_unschedule_all_actions( 'wpb_osm_auto_transition', array(), 'wpb-osm' );
+}

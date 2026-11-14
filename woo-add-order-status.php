@@ -29,6 +29,7 @@ require_once WPB_OSM_PATH . 'includes/class-manager.php';
 require_once WPB_OSM_PATH . 'includes/class-admin.php';
 require_once WPB_OSM_PATH . 'includes/class-rest.php';
 require_once WPB_OSM_PATH . 'includes/class-email.php';
+require_once WPB_OSM_PATH . 'includes/class-features.php';
 
 add_action(
 	'before_woocommerce_init',

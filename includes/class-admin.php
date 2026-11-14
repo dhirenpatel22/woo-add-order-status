@@ -34,6 +34,7 @@ class Admin {
 		add_action( 'admin_menu', array( __CLASS__, 'menu' ) );
 		add_action( 'admin_post_wpb_osm_save', array( __CLASS__, 'save' ) );
 		add_action( 'admin_post_wpb_osm_delete', array( __CLASS__, 'delete' ) );
+		add_action( 'admin_post_wpb_osm_gateways', array( __CLASS__, 'save_gateways' ) );
 		add_action( 'admin_head', array( __CLASS__, 'colors' ) );
 	}
 
@@ -72,8 +73,25 @@ class Admin {
 		$editing  = $edit_key ? $manager->get_status( $edit_key ) : null;
 		$notice   = get_transient( self::notice_key() );
 		delete_transient( self::notice_key() );
+		$gateways    = WC()->payment_gateways() ? WC()->payment_gateways()->payment_gateways() : array();
+		$gateway_map = (array) get_option( Features::GATEWAY_OPTION, array() );
 
 		include WPB_OSM_PATH . 'templates/admin-page.php';
+	}
+
+	/**
+	 * Handle the "status after checkout" form.
+	 */
+	public static function save_gateways() {
+		self::authorize();
+		check_admin_referer( 'wpb_osm_gateways' );
+
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized in Features::save_gateway_statuses().
+		$input = isset( $_POST['gateway'] ) && is_array( $_POST['gateway'] ) ? wp_unslash( $_POST['gateway'] ) : array();
+		Features::save_gateway_statuses( $input );
+		self::notice( 'success', __( 'Payment method statuses saved.', 'woo-add-order-status' ) );
+		wp_safe_redirect( self::url() );
+		exit;
 	}
 
 	/**
@@ -172,6 +190,13 @@ class Admin {
 				esc_attr( $status['color'] ),
 				esc_attr( self::text_color( $status['color'] ) )
 			);
+			if ( $status['action_button'] ) {
+				printf(
+					'.wc-action-button-wpb-osm-%1$s::after{font-family:Dashicons;content:"\f147";color:%2$s;}',
+					esc_attr( $status['key'] ),
+					esc_attr( $status['color'] )
+				);
+			}
 		}
 		echo '</style>';
 	}

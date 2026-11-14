@@ -29,10 +29,10 @@ class Status_Email extends \WC_Email {
 	public function __construct( $status ) {
 		$this->status         = $status;
 		$this->id             = 'wpb_osm_' . str_replace( '-', '_', $status['key'] );
-		$this->customer_email = true;
+		$this->customer_email = 'admin' !== $status['recipient'];
 		/* translators: %s: status label. */
 		$this->title          = sprintf( __( 'Order status: %s', 'woo-add-order-status' ), $status['label'] );
-		$this->description    = __( 'Sent to the customer when their order moves to this custom status. The body is set in WooCommerce → Order Status Manager; leave it empty to send nothing.', 'woo-add-order-status' );
+		$this->description    = __( 'Sent when an order moves to this custom status. Body and recipients are set in WooCommerce → Order Status Manager; leave the body empty to send nothing.', 'woo-add-order-status' );
 		$this->template_html  = 'emails/custom-status.php';
 		$this->template_plain = 'emails/plain/custom-status.php';
 		$this->template_base  = WPB_OSM_PATH . 'templates/';
@@ -90,7 +90,7 @@ class Status_Email extends \WC_Email {
 
 		if ( is_a( $order, 'WC_Order' ) ) {
 			$this->object                          = $order;
-			$this->recipient                       = $order->get_billing_email();
+			$this->recipient                       = $this->build_recipients( $order );
 			$this->placeholders['{order_date}']    = wc_format_datetime( $order->get_date_created() );
 			$this->placeholders['{order_number}']  = $order->get_order_number();
 			$this->placeholders['{customer_name}'] = $order->get_billing_first_name();
@@ -101,6 +101,26 @@ class Status_Email extends \WC_Email {
 		}
 
 		$this->restore_locale();
+	}
+
+	/**
+	 * Customer and/or store admin, plus CC addresses. Empty when nobody applies.
+	 *
+	 * @param \WC_Order $order Order.
+	 * @return string Comma-separated addresses.
+	 */
+	private function build_recipients( $order ) {
+		$to = array();
+		if ( 'admin' !== $this->status['recipient'] && $order->get_billing_email() ) {
+			$to[] = $order->get_billing_email();
+		}
+		if ( 'customer' !== $this->status['recipient'] ) {
+			$to[] = get_option( 'admin_email' );
+		}
+		if ( $to && '' !== $this->status['cc'] ) {
+			$to = array_merge( $to, array_map( 'trim', explode( ',', $this->status['cc'] ) ) );
+		}
+		return implode( ',', array_unique( array_filter( $to ) ) );
 	}
 
 	/**

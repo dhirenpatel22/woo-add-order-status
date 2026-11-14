@@ -62,26 +62,43 @@ class Manager {
 		Admin::init( $this );
 		REST::init( $this );
 		Email::init( $this );
+		Features::init( $this );
 	}
 
 	/**
-	 * Fill missing fields (statuses saved by v3.0.0 have no "paid").
+	 * Field defaults for a status.
+	 *
+	 * @return array
+	 */
+	public static function defaults() {
+		return array(
+			'key'           => '',
+			'label'         => '',
+			'after'         => 'wc-processing',
+			'color'         => '#2271b1',
+			'description'   => '',
+			'email'         => '',
+			'recipient'     => 'customer',
+			'cc'            => '',
+			'paid'          => false,
+			'downloads'     => false,
+			'reduce_stock'  => false,
+			'editable'      => false,
+			'action_button' => false,
+			'auto_after'    => 0,
+			'auto_unit'     => 'days',
+			'auto_to'       => '',
+		);
+	}
+
+	/**
+	 * Fill missing fields (statuses saved by older versions).
 	 *
 	 * @param array $status Raw status.
 	 * @return array
 	 */
 	private function normalize( $status ) {
-		return wp_parse_args(
-			(array) $status,
-			array(
-				'key'   => '',
-				'label' => '',
-				'after' => 'wc-processing',
-				'color' => '#2271b1',
-				'email' => '',
-				'paid'  => false,
-			)
-		);
+		return wp_parse_args( (array) $status, self::defaults() );
 	}
 
 	/**
@@ -111,7 +128,7 @@ class Manager {
 	/**
 	 * Validate and sanitize input for one status.
 	 *
-	 * @param array  $input        Unslashed input: key, label, after, color, email, paid.
+	 * @param array  $input        Unslashed input; fields as in defaults().
 	 * @param string $original_key Key being edited, or '' when adding. Keys can't be renamed.
 	 * @return array|\WP_Error Clean status or error.
 	 */
@@ -143,19 +160,44 @@ class Manager {
 			$error->add( 'after_invalid', __( 'Choose an existing status to place this one after.', 'woo-add-order-status' ) );
 		}
 
+		$cc = array_filter( array_map( 'trim', explode( ',', $get( 'cc' ) ) ) );
+		foreach ( $cc as $address ) {
+			if ( ! is_email( $address ) ) {
+				/* translators: %s: email address. */
+				$error->add( 'cc_invalid', sprintf( __( '"%s" is not a valid email address.', 'woo-add-order-status' ), $address ) );
+			}
+		}
+
+		$auto_after = absint( $get( 'auto_after' ) );
+		$auto_to    = sanitize_text_field( $get( 'auto_to' ) );
+		if ( $auto_after > 0 && ( 'wc-' . $key === $auto_to || ! array_key_exists( $auto_to, wc_get_order_statuses() ) ) ) {
+			$error->add( 'auto_invalid', __( 'Choose a different status to move orders to automatically.', 'woo-add-order-status' ) );
+		}
+
 		if ( $error->has_errors() ) {
 			return $error;
 		}
 
-		$color = sanitize_hex_color( $get( 'color' ) );
+		$color     = sanitize_hex_color( $get( 'color' ) );
+		$recipient = $get( 'recipient' );
 
 		return array(
-			'key'   => $key,
-			'label' => $label,
-			'after' => $after,
-			'color' => $color ? $color : '#2271b1',
-			'email' => wp_kses_post( $get( 'email' ) ),
-			'paid'  => ! empty( $input['paid'] ),
+			'key'           => $key,
+			'label'         => $label,
+			'after'         => $after,
+			'color'         => $color ? $color : '#2271b1',
+			'description'   => sanitize_textarea_field( $get( 'description' ) ),
+			'email'         => wp_kses_post( $get( 'email' ) ),
+			'recipient'     => in_array( $recipient, array( 'customer', 'admin', 'both' ), true ) ? $recipient : 'customer',
+			'cc'            => implode( ', ', array_map( 'sanitize_email', $cc ) ),
+			'paid'          => ! empty( $input['paid'] ),
+			'downloads'     => ! empty( $input['downloads'] ),
+			'reduce_stock'  => ! empty( $input['reduce_stock'] ),
+			'editable'      => ! empty( $input['editable'] ),
+			'action_button' => ! empty( $input['action_button'] ),
+			'auto_after'    => $auto_after,
+			'auto_unit'     => 'hours' === $get( 'auto_unit' ) ? 'hours' : 'days',
+			'auto_to'       => $auto_after > 0 ? $auto_to : '',
 		);
 	}
 

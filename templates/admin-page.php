@@ -77,7 +77,7 @@ $wpb_osm_bool = array(
 			}
 			?>
 			<tr>
-				<td><mark class="order-status" style="background:<?php echo esc_attr( $wpb_osm_status['color'] ); ?>;color:<?php echo esc_attr( \WPB_OSM\Admin::text_color( $wpb_osm_status['color'] ) ); ?>"><span><?php echo esc_html( $wpb_osm_status['label'] ); ?></span></mark></td>
+				<td><mark class="order-status" style="display:inline-block;padding:2px 10px;border-radius:4px;font-weight:500;line-height:1.8;background:<?php echo esc_attr( $wpb_osm_status['color'] ); ?>;color:<?php echo esc_attr( \WPB_OSM\Admin::text_color( $wpb_osm_status['color'] ) ); ?>"><span><?php echo esc_html( $wpb_osm_status['label'] ); ?></span></mark></td>
 				<td><code><?php echo esc_html( $wpb_osm_status['key'] ); ?></code></td>
 				<td><?php echo esc_html( isset( $wpb_osm_all[ $wpb_osm_status['after'] ] ) ? $wpb_osm_all[ $wpb_osm_status['after'] ] : $wpb_osm_status['after'] ); ?></td>
 				<td><?php echo $wpb_osm_options ? esc_html( implode( ' · ', $wpb_osm_options ) ) : '&mdash;'; ?></td>

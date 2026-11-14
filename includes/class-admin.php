@@ -192,7 +192,7 @@ class Admin {
 			);
 			if ( $status['action_button'] ) {
 				printf(
-					'.wc-action-button-wpb-osm-%1$s::after{font-family:Dashicons;content:"\f147";color:%2$s;}',
+					'.wc-action-button-wpb-osm-%1$s::after{font-family:Dashicons;content:"\f344";color:%2$s;}',
 					esc_attr( $status['key'] ),
 					esc_attr( $status['color'] )
 				);

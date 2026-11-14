@@ -78,6 +78,15 @@ When an order enters a status with a rule, WooCommerce's scheduler (Action Sched
 
 Users with the `manage_woocommerce` capability (shop managers and administrators).
 
+== Screenshots ==
+
+1. Orders list with coloured custom statuses and one-click "Change to" buttons.
+2. Order Status Manager: every status with its rules and order count.
+3. Editing a status: position, colour, customer description, rules, automatic move and email.
+4. The customer's order page showing the status and its description.
+5. Each status email has its own settings under WooCommerce → Settings → Emails.
+6. Choose the status new orders get for each payment method.
+
 == Changelog ==
 
 = 3.1.0 =

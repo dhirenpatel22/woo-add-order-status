@@ -15,6 +15,18 @@ defined( 'ABSPATH' ) || exit;
 class Email {
 
 	/**
+	 * Whether this WooCommerce has its own Cc/Bcc settings on emails
+	 * (the "email improvements" feature, WooCommerce 9.8+).
+	 *
+	 * @return bool
+	 */
+	public static function native_cc_available() {
+		return class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class )
+			&& \Automattic\WooCommerce\Utilities\FeaturesUtil::feature_is_enabled( 'email_improvements' )
+			&& property_exists( 'WC_Email', 'cc' );
+	}
+
+	/**
 	 * Hook up.
 	 *
 	 * @param Manager $manager Manager.

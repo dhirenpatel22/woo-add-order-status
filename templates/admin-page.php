@@ -18,8 +18,9 @@ $wpb_osm_form = $editing ? $editing : \WPB_OSM\Manager::defaults();
 $wpb_osm_all  = wc_get_order_statuses();
 $wpb_osm_rest = $wpb_osm_all;
 unset( $wpb_osm_rest[ 'wc-' . $wpb_osm_form['key'] ] );
-$wpb_osm_page = add_query_arg( 'page', \WPB_OSM\Admin::PAGE, admin_url( 'admin.php' ) );
-$wpb_osm_bool = array(
+$wpb_osm_page      = add_query_arg( 'page', \WPB_OSM\Admin::PAGE, admin_url( 'admin.php' ) );
+$wpb_osm_native_cc = \WPB_OSM\Email::native_cc_available();
+$wpb_osm_bool      = array(
 	'paid'          => array( __( 'Counts as paid', 'exivon-custom-order-statuses-for-woocommerce' ), __( 'WooCommerce treats orders in this status as paid (e.g. a status after Processing).', 'exivon-custom-order-statuses-for-woocommerce' ) ),
 	'downloads'     => array( __( 'Allow downloads', 'exivon-custom-order-statuses-for-woocommerce' ), __( 'Customers can download purchased files while the order is in this status.', 'exivon-custom-order-statuses-for-woocommerce' ) ),
 	'reduce_stock'  => array( __( 'Reduce stock', 'exivon-custom-order-statuses-for-woocommerce' ), __( 'Reduce product stock when an order enters this status (only once per order).', 'exivon-custom-order-statuses-for-woocommerce' ) ),
@@ -181,9 +182,25 @@ $wpb_osm_bool = array(
 							<option value="admin" <?php selected( $wpb_osm_form['recipient'], 'admin' ); ?>><?php esc_html_e( 'Store admin', 'exivon-custom-order-statuses-for-woocommerce' ); ?></option>
 							<option value="both" <?php selected( $wpb_osm_form['recipient'], 'both' ); ?>><?php esc_html_e( 'Customer and store admin', 'exivon-custom-order-statuses-for-woocommerce' ); ?></option>
 						</select>
-						<label for="wpb-osm-cc" style="margin-left:1em"><?php esc_html_e( 'CC', 'exivon-custom-order-statuses-for-woocommerce' ); ?></label>
-						<input id="wpb-osm-cc" class="regular-text" name="status[cc]" value="<?php echo esc_attr( $wpb_osm_form['cc'] ); ?>" placeholder="warehouse@example.com, …" />
+						<?php if ( ! $wpb_osm_native_cc || '' !== $wpb_osm_form['cc'] ) : ?>
+							<label for="wpb-osm-cc" style="margin-left:1em"><?php esc_html_e( 'CC', 'exivon-custom-order-statuses-for-woocommerce' ); ?></label>
+							<input id="wpb-osm-cc" class="regular-text" name="status[cc]" value="<?php echo esc_attr( $wpb_osm_form['cc'] ); ?>" placeholder="warehouse@example.com, …" />
+						<?php endif; ?>
 					</p>
+					<?php if ( $wpb_osm_native_cc ) : ?>
+						<p class="description">
+							<?php
+							printf(
+								/* translators: %s: link to the WooCommerce email settings. */
+								esc_html__( 'Add Cc and Bcc recipients in %s.', 'exivon-custom-order-statuses-for-woocommerce' ),
+								'<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=email&section=wpb_osm_status_email' ) ) . '">' . esc_html__( 'WooCommerce → Settings → Emails → Custom order status', 'exivon-custom-order-statuses-for-woocommerce' ) . '</a>'
+							);
+							if ( '' !== $wpb_osm_form['cc'] ) {
+								echo ' ' . esc_html__( 'The CC above still works; move it there and clear it here to keep everything in one place.', 'exivon-custom-order-statuses-for-woocommerce' );
+							}
+							?>
+						</p>
+					<?php endif; ?>
 				</td>
 			</tr>
 		</table>

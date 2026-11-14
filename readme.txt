@@ -36,7 +36,7 @@ Add statuses such as "Awaiting Shipment" or "Ready for Collection" to your WooCo
 **Emails**
 
 * One email per status, sent with your WooCommerce email template and order details.
-* Send to the customer, the store admin, or both, plus CC addresses.
+* Send to the customer, the store admin, or both. CC addresses per status, or WooCommerce's own Cc/Bcc when your store has them (email improvements on).
 * Placeholders: {customer_name}, {order_number}, {order_date}, {site_title}.
 * One "Custom order status" entry under WooCommerce → Settings → Emails for subject, heading, on/off and preview. Use {status} for the status name.
 
@@ -103,7 +103,7 @@ Users with the `manage_woocommerce` capability (shop managers and administrators
 * New: per-status rules: allow downloads, reduce stock, keep editable, one-click action button.
 * New: automatic move to another status after a set number of hours or days.
 * New: customer-facing status description on the order page.
-* New: email recipients (customer, admin or both) and CC addresses.
+* New: email recipients (customer, admin or both) and CC addresses. The CC field hides itself when WooCommerce's own Cc/Bcc settings are available.
 * New: one "Custom order status" email in WooCommerce → Settings → Emails (shared subject/heading with {status}); preview and test emails work.
 * New: status after checkout per payment method.
 * New: HPOS and block checkout compatibility declared; requires WooCommerce; uninstall cleanup.

@@ -1,87 +1,50 @@
-# Woo Add Order Status
+# Custom Order Statuses for WooCommerce
 
-A lightweight plugin to easily add and manage custom order statuses in your WooCommerce store.
+Custom WooCommerce order statuses with colours, emails, automatic transitions and per-status rules. No upsells.
 
-## Plugin Details
+- **Version:** 3.1.0
+- **Requires:** WordPress 6.5+, WooCommerce 8.2+, PHP 7.4+
+- **Tested up to:** WordPress 7.1, WooCommerce 11.3 (HPOS and legacy order storage), PHP 8.2 and 8.5
+- **License:** GPLv2 or later
 
-- Author: Dhiren Patel
-- Author URI: https://dhirenpatel.com
-- Version: 3.0.0
-- Text Domain: woo-add-order-status
-- Tags: woocommerce, order status, custom order status, woo order
-- Requires at least: 5.8
-- Tested up to: 6.7
-- Requires PHP: 7.4
-- Stable tag: 3.0.0
-- License: GPLv2 or later
-- License URI: https://www.gnu.org/licenses/gpl-2.0.html
+The WordPress.org readme is [`readme.txt`](readme.txt).
 
-## Description
+## Features
 
-**Woo Add Order Status** is a lightweight and easy-to-use plugin that lets you add unlimited custom order statuses to your WooCommerce store — no coding required.
+- Add, edit and delete custom order statuses under **WooCommerce → Order Status Manager**.
+- Choose where each status sits in the status list.
+- Colour per status in the orders list; text colour adjusts for readability.
+- Email per status, using the WooCommerce email template, with order details and placeholders (`{customer_name}`, `{order_number}`, `{order_date}`, `{site_title}`). Send to customer, admin or both, plus CC. Managed under **WooCommerce → Settings → Emails**.
+- Per-status rules: counts as paid, allow downloads, reduce stock (once), keep editable, one-click action button.
+- Automatic move after N hours/days to another status (Action Scheduler; skipped if the order moved on; adds a note).
+- Customer description shown on the order page.
+- Status after checkout per payment method.
+- "Change status to …" bulk actions.
+- Statuses with orders can't be deleted, so orders never go missing.
+- REST API (requires `manage_woocommerce`):
+  - `GET /wp-json/wpb-osm/v1/statuses`
+  - `POST /wp-json/wpb-osm/v1/statuses` with any status field (`key`, `label`, `after`, `color`, `description`, `email`, `recipient`, `cc`, `paid`, `downloads`, `reduce_stock`, `editable`, `action_button`, `auto_after`, `auto_unit`, `auto_to`); creates, or updates when `key` exists
+  - `DELETE /wp-json/wpb-osm/v1/statuses/{key}` (409 while orders use it)
+- HPOS and block checkout compatible.
 
-Whether you need statuses like "Awaiting Shipment", "Being Processed", or anything specific to your workflow, this plugin makes it simple to create and manage them directly from your WooCommerce admin panel.
+## Status keys
 
-### Key Features
+Up to 17 characters (`a-z`, `0-9`, `-`, `_`). WooCommerce stores `wc-{key}` in a 20-character column. Keys can't be renamed after creation.
 
-- Lightweight — minimal footprint, no bloat
-- Easily add new custom order statuses from the admin panel
-- Set a custom background color for each status (visible in the orders list)
-- Control where each status appears in the order flow (insert after any existing status)
-- Send a custom email notification to the customer when an order moves to a custom status
-- REST API support for managing statuses programmatically
-- Works seamlessly with WooCommerce's native order management
+## Email template override
 
-### Why use Woo Add Order Status?
-
-Most order status plugins are heavy and packed with features you never use. This plugin does one thing and does it well — lets you add new WooCommerce order statuses quickly and cleanly, without slowing down your store.
+Copy `templates/emails/custom-status.php` (or `plain/custom-status.php`) to `yourtheme/woocommerce/emails/`.
 
 ## Installation
 
-1. Upload the `woo-add-order-status` folder to the `/wp-content/plugins/` directory.
-2. Activate the plugin through the **Plugins** menu in WordPress.
-3. Go to **WooCommerce > Order Status Manager** to add and manage your custom statuses.
+1. Install and activate WooCommerce.
+2. Upload `exivon-custom-order-statuses-for-woocommerce` to `/wp-content/plugins/` and activate.
+3. Go to **WooCommerce → Order Status Manager**.
 
-## Frequently Asked Questions
+## Uninstall
 
-### Does this plugin require WooCommerce?
-
-Yes. WooCommerce must be installed and active.
-
-### Can I add as many custom statuses as I need?
-
-Yes, there is no limit to the number of custom order statuses you can add.
-
-### Will custom statuses appear in the WooCommerce orders list?
-
-Yes. Each status is registered with WooCommerce and appears in the orders list with its custom color.
-
-### Can I send email notifications for custom statuses?
-
-Yes. You can set a custom email body per status that is sent to the customer when their order is updated to that status.
-
-### Is there a REST API?
-
-Yes. The plugin includes a REST API endpoint for managing statuses programmatically.
-
-## Screenshots
-
-1. Admin panel — add and manage custom order statuses
-2. WooCommerce orders list — custom statuses displayed with colors
+Deleting the plugin removes its settings. Orders are not changed: move orders out of custom statuses first, or they won't show in WooCommerce's order lists.
 
 ## Changelog
 
-### 3.0.0
-
-- Production-ready release
-- Added color picker for status labels
-- Added custom email notification per status
-- Added REST API support
-- Fixed CSS output to use proper style tags
-- Fixed textdomain loading to comply with WordPress 6.7+
-
-## Upgrade Notice
-
-### 3.0.0
-
-Initial stable release. No upgrade steps required.
+See [`readme.txt`](readme.txt).

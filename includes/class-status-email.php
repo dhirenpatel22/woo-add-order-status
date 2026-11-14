@@ -1,6 +1,6 @@
 <?php
 /**
- * Customer email for one custom status.
+ * One WooCommerce email shared by all custom statuses.
  *
  * @package WPB_OSM
  */
@@ -10,12 +10,23 @@ namespace WPB_OSM;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Shows under WooCommerce → Settings → Emails as "Order status: {label}".
+ * Shows under WooCommerce → Settings → Emails as "Custom order status".
+ *
+ * Subject, heading, on/off and email type are shared; the body and recipients
+ * are set per status in WooCommerce → Order Status Manager. A single class is
+ * used because WooCommerce's email preview looks emails up by class name.
  */
 class Status_Email extends \WC_Email {
 
 	/**
-	 * The custom status.
+	 * Manager.
+	 *
+	 * @var Manager
+	 */
+	private $manager;
+
+	/**
+	 * Status being sent (or previewed).
 	 *
 	 * @var array
 	 */
@@ -24,28 +35,84 @@ class Status_Email extends \WC_Email {
 	/**
 	 * Set up.
 	 *
-	 * @param array $status Custom status.
+	 * @param Manager $manager Manager.
 	 */
-	public function __construct( $status ) {
-		$this->status         = $status;
-		$this->id             = 'wpb_osm_' . str_replace( '-', '_', $status['key'] );
-		$this->customer_email = 'admin' !== $status['recipient'];
-		/* translators: %s: status label. */
-		$this->title          = sprintf( __( 'Order status: %s', 'exivon-custom-order-statuses-for-woocommerce' ), $status['label'] );
-		$this->description    = __( 'Sent when an order moves to this custom status. Body and recipients are set in WooCommerce → Order Status Manager; leave the body empty to send nothing.', 'exivon-custom-order-statuses-for-woocommerce' );
+	public function __construct( $manager ) {
+		$this->manager        = $manager;
+		$this->id             = 'wpb_osm_custom_status';
+		$this->customer_email = true;
+		$this->title          = __( 'Custom order status', 'exivon-custom-order-statuses-for-woocommerce' );
+		$this->description    = __( 'Sent when an order moves to a custom status. Subject and heading apply to every custom status; use {status} for the status name. The message and recipients are set per status in WooCommerce → Order Status Manager; statuses with no message send nothing.', 'exivon-custom-order-statuses-for-woocommerce' );
 		$this->template_html  = 'emails/custom-status.php';
 		$this->template_plain = 'emails/plain/custom-status.php';
 		$this->template_base  = WPB_OSM_PATH . 'templates/';
-		$this->placeholders   = array(
+
+		$this->use_status( $this->preview_status() );
+		add_filter( 'woocommerce_email_preview_placeholders', array( $this, 'preview_placeholders' ), 10, 3 );
+
+		foreach ( $manager->get_statuses() as $status ) {
+			$key = $status['key'];
+			add_action(
+				'woocommerce_order_status_' . $key . '_notification',
+				function ( $order_id, $order = false ) use ( $key ) {
+					$this->trigger( $key, $order_id, $order );
+				},
+				10,
+				2
+			);
+		}
+
+		parent::__construct();
+	}
+
+	/**
+	 * Status shown in WooCommerce's email preview: the first one with a message.
+	 *
+	 * @return array
+	 */
+	private function preview_status() {
+		foreach ( $this->manager->get_statuses() as $status ) {
+			if ( '' !== trim( $status['email'] ) ) {
+				return $status;
+			}
+		}
+		return array_merge(
+			Manager::defaults(),
+			array(
+				'label' => __( 'Awaiting Shipment', 'exivon-custom-order-statuses-for-woocommerce' ),
+				'email' => __( 'Hi {customer_name}, your order #{order_number} has moved to a new status.', 'exivon-custom-order-statuses-for-woocommerce' ),
+			)
+		);
+	}
+
+	/**
+	 * Fill our own placeholders in WooCommerce's email preview.
+	 *
+	 * @param array  $placeholders Placeholders.
+	 * @param string $email_type   Email class being previewed.
+	 * @param mixed  $email_object Dummy order (WooCommerce 9.9+).
+	 * @return array
+	 */
+	public function preview_placeholders( $placeholders, $email_type, $email_object = null ) {
+		if ( self::class === $email_type && $email_object instanceof \WC_Order ) {
+			$placeholders['{customer_name}'] = $email_object->get_billing_first_name();
+		}
+		return $placeholders;
+	}
+
+	/**
+	 * Point the email at one status.
+	 *
+	 * @param array $status Status.
+	 */
+	private function use_status( $status ) {
+		$this->status       = $status;
+		$this->placeholders = array(
 			'{order_date}'    => '',
 			'{order_number}'  => '',
 			'{customer_name}' => '',
 			'{status}'        => $status['label'],
 		);
-
-		add_action( 'woocommerce_order_status_' . $status['key'] . '_notification', array( $this, 'trigger' ), 10, 2 );
-
-		parent::__construct();
 	}
 
 	/**
@@ -67,22 +134,20 @@ class Status_Email extends \WC_Email {
 	}
 
 	/**
-	 * Off when the status has no email body.
+	 * Send for one status.
 	 *
-	 * @return bool
-	 */
-	public function is_enabled() {
-		return parent::is_enabled() && '' !== trim( $this->status['email'] );
-	}
-
-	/**
-	 * Send it.
-	 *
+	 * @param string         $key      Status key.
 	 * @param int            $order_id Order ID.
 	 * @param \WC_Order|bool $order    Order.
 	 */
-	public function trigger( $order_id, $order = false ) {
+	public function trigger( $key, $order_id, $order = false ) {
+		$status = $this->manager->get_status( $key );
+		if ( ! $status || '' === trim( $status['email'] ) || ! $this->is_enabled() ) {
+			return;
+		}
+
 		$this->setup_locale();
+		$this->use_status( $status );
 
 		if ( $order_id && ! is_a( $order, 'WC_Order' ) ) {
 			$order = wc_get_order( $order_id );
@@ -94,10 +159,10 @@ class Status_Email extends \WC_Email {
 			$this->placeholders['{order_date}']    = wc_format_datetime( $order->get_date_created() );
 			$this->placeholders['{order_number}']  = $order->get_order_number();
 			$this->placeholders['{customer_name}'] = $order->get_billing_first_name();
-		}
 
-		if ( $this->is_enabled() && $this->get_recipient() ) {
-			$this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+			if ( $this->get_recipient() ) {
+				$this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+			}
 		}
 
 		$this->restore_locale();

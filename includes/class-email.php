@@ -15,6 +15,18 @@ defined( 'ABSPATH' ) || exit;
 class Email {
 
 	/**
+	 * Whether this WooCommerce has its own Cc/Bcc settings on emails
+	 * (the "email improvements" feature, WooCommerce 9.8+).
+	 *
+	 * @return bool
+	 */
+	public static function native_cc_available() {
+		return class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class )
+			&& \Automattic\WooCommerce\Utilities\FeaturesUtil::feature_is_enabled( 'email_improvements' )
+			&& property_exists( 'WC_Email', 'cc' );
+	}
+
+	/**
 	 * Hook up.
 	 *
 	 * @param Manager $manager Manager.
@@ -34,9 +46,9 @@ class Email {
 		add_filter(
 			'woocommerce_email_classes',
 			function ( $emails ) use ( $manager ) {
-				require_once WPB_OSM_PATH . 'includes/class-status-email.php';
-				foreach ( $manager->get_statuses() as $status ) {
-					$emails[ 'WPB_OSM_Status_Email_' . $status['key'] ] = new Status_Email( $status );
+				if ( $manager->get_statuses() ) {
+					require_once WPB_OSM_PATH . 'includes/class-status-email.php';
+					$emails['WPB_OSM_Status_Email'] = new Status_Email( $manager );
 				}
 				return $emails;
 			}

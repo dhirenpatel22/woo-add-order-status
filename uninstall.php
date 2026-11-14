@@ -13,6 +13,7 @@ foreach ( (array) get_option( 'wpb_osm_statuses', array() ) as $wpb_osm_status )
 		delete_option( 'woocommerce_wpb_osm_' . str_replace( '-', '_', sanitize_key( $wpb_osm_status['key'] ) ) . '_settings' );
 	}
 }
+delete_option( 'woocommerce_wpb_osm_custom_status_settings' );
 delete_option( 'wpb_osm_statuses' );
 delete_option( 'wpb_osm_gateway_statuses' );
 

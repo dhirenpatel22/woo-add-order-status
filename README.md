@@ -1,4 +1,4 @@
-# Woo Add Order Status
+# Custom Order Statuses for WooCommerce
 
 Custom WooCommerce order statuses with colours, emails, automatic transitions and per-status rules. No upsells.
 
@@ -38,7 +38,7 @@ Copy `templates/emails/custom-status.php` (or `plain/custom-status.php`) to `you
 ## Installation
 
 1. Install and activate WooCommerce.
-2. Upload `woo-add-order-status` to `/wp-content/plugins/` and activate.
+2. Upload `exivon-custom-order-statuses-for-woocommerce` to `/wp-content/plugins/` and activate.
 3. Go to **WooCommerce → Order Status Manager**.
 
 ## Uninstall

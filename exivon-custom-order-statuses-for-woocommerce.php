@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:          Woo Add Order Status
+ * Plugin Name:          Custom Order Statuses for WooCommerce
  * Plugin URI:           https://github.com/dhirenpatel22/woo-add-order-status
  * Description:          A lightweight plugin to easily add and manage custom order statuses in WooCommerce.
  * Version:              3.1.0
@@ -11,7 +11,7 @@
  * Author URI:           https://dhirenpatel.me
  * License:              GPLv2 or later
  * License URI:          https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:          woo-add-order-status
+ * Text Domain:          exivon-custom-order-statuses-for-woocommerce
  * WC requires at least: 8.2
  * WC tested up to:      11.3
  *

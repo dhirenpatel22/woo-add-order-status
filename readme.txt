@@ -1,4 +1,4 @@
-=== Woo Add Order Status ===
+=== Custom Order Statuses for WooCommerce ===
 Contributors: dhirenpatel22
 Tags: woocommerce, order status, custom order status, order management
 Requires at least: 6.5
@@ -53,7 +53,7 @@ Add statuses such as "Awaiting Shipment" or "Ready for Collection" to your WooCo
 == Installation ==
 
 1. Install and activate WooCommerce.
-2. Upload the `woo-add-order-status` folder to `/wp-content/plugins/` and activate it.
+2. Upload the `exivon-custom-order-statuses-for-woocommerce` folder to `/wp-content/plugins/` and activate it.
 3. Go to WooCommerce → Order Status Manager.
 
 == Frequently Asked Questions ==
@@ -81,6 +81,7 @@ Users with the `manage_woocommerce` capability (shop managers and administrators
 == Changelog ==
 
 = 3.1.0 =
+* Renamed from "Woo Add Order Status" to "Custom Order Statuses for WooCommerce" (WordPress.org naming rules). The main plugin file is now `exivon-custom-order-statuses-for-woocommerce.php`: if you installed 3.0.0 manually, delete the old folder and activate the new one. Your statuses are kept.
 * Fix: saving a status no longer deletes the others. The admin page now lists every status with edit and delete.
 * Fix: status colours now show in the orders list.
 * Fix: apostrophes no longer saved with backslashes.
@@ -104,4 +105,4 @@ Users with the `manage_woocommerce` capability (shop managers and administrators
 == Upgrade Notice ==
 
 = 3.1.0 =
-Fixes a bug where saving a status deleted all other statuses, and locks down the REST API. Update recommended.
+Renamed plugin; reactivate after updating. Fixes a bug where saving a status deleted all other statuses, and locks down the REST API.

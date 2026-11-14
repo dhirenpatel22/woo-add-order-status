@@ -128,7 +128,7 @@ class Features {
 					'woocommerce-mark-order-status'
 				),
 				/* translators: %s: status label. */
-				'name'   => sprintf( __( 'Change to %s', 'woo-add-order-status' ), $status['label'] ),
+				'name'   => sprintf( __( 'Change to %s', 'exivon-custom-order-statuses-for-woocommerce' ), $status['label'] ),
 				'action' => 'wpb-osm-' . $status['key'],
 			);
 		}
@@ -181,7 +181,7 @@ class Features {
 			return;
 		}
 		/* translators: %s: status label. */
-		$order->update_status( $to, sprintf( __( 'Moved automatically by the "%s" status rule.', 'woo-add-order-status' ), $status['label'] ) );
+		$order->update_status( $to, sprintf( __( 'Moved automatically by the "%s" status rule.', 'exivon-custom-order-statuses-for-woocommerce' ), $status['label'] ) );
 	}
 
 	/**

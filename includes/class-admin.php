@@ -44,8 +44,8 @@ class Admin {
 	public static function menu() {
 		add_submenu_page(
 			'woocommerce',
-			__( 'Order Status Manager', 'woo-add-order-status' ),
-			__( 'Order Status Manager', 'woo-add-order-status' ),
+			__( 'Order Status Manager', 'exivon-custom-order-statuses-for-woocommerce' ),
+			__( 'Order Status Manager', 'exivon-custom-order-statuses-for-woocommerce' ),
 			'manage_woocommerce', // phpcs:ignore WordPress.WP.Capabilities.Unknown -- WooCommerce capability.
 			self::PAGE,
 			array( __CLASS__, 'render' )
@@ -89,7 +89,7 @@ class Admin {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized in Features::save_gateway_statuses().
 		$input = isset( $_POST['gateway'] ) && is_array( $_POST['gateway'] ) ? wp_unslash( $_POST['gateway'] ) : array();
 		Features::save_gateway_statuses( $input );
-		self::notice( 'success', __( 'Payment method statuses saved.', 'woo-add-order-status' ) );
+		self::notice( 'success', __( 'Payment method statuses saved.', 'exivon-custom-order-statuses-for-woocommerce' ) );
 		wp_safe_redirect( self::url() );
 		exit;
 	}
@@ -119,7 +119,7 @@ class Admin {
 
 		self::$manager->save_status( $status );
 		/* translators: %s: status label. */
-		self::notice( 'success', sprintf( __( 'Status "%s" saved.', 'woo-add-order-status' ), $status['label'] ) );
+		self::notice( 'success', sprintf( __( 'Status "%s" saved.', 'exivon-custom-order-statuses-for-woocommerce' ), $status['label'] ) );
 		wp_safe_redirect( self::url() );
 		exit;
 	}
@@ -136,7 +136,7 @@ class Admin {
 		if ( is_wp_error( $result ) ) {
 			self::notice( 'error', $result->get_error_message() );
 		} else {
-			self::notice( 'success', __( 'Status deleted.', 'woo-add-order-status' ) );
+			self::notice( 'success', __( 'Status deleted.', 'exivon-custom-order-statuses-for-woocommerce' ) );
 		}
 		wp_safe_redirect( self::url() );
 		exit;
@@ -147,7 +147,7 @@ class Admin {
 	 */
 	private static function authorize() {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) { // phpcs:ignore WordPress.WP.Capabilities.Unknown -- WooCommerce capability.
-			wp_die( esc_html__( 'You are not allowed to manage order statuses.', 'woo-add-order-status' ), 403 );
+			wp_die( esc_html__( 'You are not allowed to manage order statuses.', 'exivon-custom-order-statuses-for-woocommerce' ), 403 );
 		}
 	}
 

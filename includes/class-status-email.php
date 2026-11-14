@@ -31,8 +31,8 @@ class Status_Email extends \WC_Email {
 		$this->id             = 'wpb_osm_' . str_replace( '-', '_', $status['key'] );
 		$this->customer_email = 'admin' !== $status['recipient'];
 		/* translators: %s: status label. */
-		$this->title          = sprintf( __( 'Order status: %s', 'woo-add-order-status' ), $status['label'] );
-		$this->description    = __( 'Sent when an order moves to this custom status. Body and recipients are set in WooCommerce → Order Status Manager; leave the body empty to send nothing.', 'woo-add-order-status' );
+		$this->title          = sprintf( __( 'Order status: %s', 'exivon-custom-order-statuses-for-woocommerce' ), $status['label'] );
+		$this->description    = __( 'Sent when an order moves to this custom status. Body and recipients are set in WooCommerce → Order Status Manager; leave the body empty to send nothing.', 'exivon-custom-order-statuses-for-woocommerce' );
 		$this->template_html  = 'emails/custom-status.php';
 		$this->template_plain = 'emails/plain/custom-status.php';
 		$this->template_base  = WPB_OSM_PATH . 'templates/';
@@ -54,7 +54,7 @@ class Status_Email extends \WC_Email {
 	 * @return string
 	 */
 	public function get_default_subject() {
-		return __( '[{site_title}]: Your order #{order_number} is now {status}', 'woo-add-order-status' );
+		return __( '[{site_title}]: Your order #{order_number} is now {status}', 'exivon-custom-order-statuses-for-woocommerce' );
 	}
 
 	/**

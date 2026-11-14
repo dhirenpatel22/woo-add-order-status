@@ -144,34 +144,34 @@ class Manager {
 		$error = new \WP_Error();
 
 		if ( '' === $key || ( '' === $original_key && sanitize_key( $get( 'key' ) ) !== trim( $get( 'key' ) ) ) ) {
-			$error->add( 'key_empty', __( 'Key is required and may only contain lowercase letters, numbers, hyphens and underscores.', 'woo-add-order-status' ) );
+			$error->add( 'key_empty', __( 'Key is required and may only contain lowercase letters, numbers, hyphens and underscores.', 'exivon-custom-order-statuses-for-woocommerce' ) );
 		} elseif ( strlen( $key ) > self::MAX_KEY_LENGTH ) {
 			/* translators: %d: maximum key length. */
-			$error->add( 'key_length', sprintf( __( 'Key must be %d characters or fewer.', 'woo-add-order-status' ), self::MAX_KEY_LENGTH ) );
+			$error->add( 'key_length', sprintf( __( 'Key must be %d characters or fewer.', 'exivon-custom-order-statuses-for-woocommerce' ), self::MAX_KEY_LENGTH ) );
 		} elseif ( '' === $original_key && ( $this->get_status( $key ) || array_key_exists( 'wc-' . $key, wc_get_order_statuses() ) || get_post_status_object( 'wc-' . $key ) ) ) {
-			$error->add( 'key_taken', __( 'That key is already used by another order status.', 'woo-add-order-status' ) );
+			$error->add( 'key_taken', __( 'That key is already used by another order status.', 'exivon-custom-order-statuses-for-woocommerce' ) );
 		}
 
 		if ( '' === $label ) {
-			$error->add( 'label_empty', __( 'Label is required.', 'woo-add-order-status' ) );
+			$error->add( 'label_empty', __( 'Label is required.', 'exivon-custom-order-statuses-for-woocommerce' ) );
 		}
 
 		if ( 'wc-' . $key === $after || ! array_key_exists( $after, wc_get_order_statuses() ) ) {
-			$error->add( 'after_invalid', __( 'Choose an existing status to place this one after.', 'woo-add-order-status' ) );
+			$error->add( 'after_invalid', __( 'Choose an existing status to place this one after.', 'exivon-custom-order-statuses-for-woocommerce' ) );
 		}
 
 		$cc = array_filter( array_map( 'trim', explode( ',', $get( 'cc' ) ) ) );
 		foreach ( $cc as $address ) {
 			if ( ! is_email( $address ) ) {
 				/* translators: %s: email address. */
-				$error->add( 'cc_invalid', sprintf( __( '"%s" is not a valid email address.', 'woo-add-order-status' ), $address ) );
+				$error->add( 'cc_invalid', sprintf( __( '"%s" is not a valid email address.', 'exivon-custom-order-statuses-for-woocommerce' ), $address ) );
 			}
 		}
 
 		$auto_after = absint( $get( 'auto_after' ) );
 		$auto_to    = sanitize_text_field( $get( 'auto_to' ) );
 		if ( $auto_after > 0 && ( 'wc-' . $key === $auto_to || ! array_key_exists( $auto_to, wc_get_order_statuses() ) ) ) {
-			$error->add( 'auto_invalid', __( 'Choose a different status to move orders to automatically.', 'woo-add-order-status' ) );
+			$error->add( 'auto_invalid', __( 'Choose a different status to move orders to automatically.', 'exivon-custom-order-statuses-for-woocommerce' ) );
 		}
 
 		if ( $error->has_errors() ) {
@@ -228,14 +228,14 @@ class Manager {
 	 */
 	public function delete_status( $key ) {
 		if ( ! $this->get_status( $key ) ) {
-			return new \WP_Error( 'not_found', __( 'Status not found.', 'woo-add-order-status' ) );
+			return new \WP_Error( 'not_found', __( 'Status not found.', 'exivon-custom-order-statuses-for-woocommerce' ) );
 		}
 		$count = $this->order_count( $key );
 		if ( $count > 0 ) {
 			return new \WP_Error(
 				'in_use',
 				/* translators: %d: number of orders. */
-				sprintf( _n( '%d order still has this status. Move it to another status before deleting.', '%d orders still have this status. Move them to another status before deleting.', $count, 'woo-add-order-status' ), $count )
+				sprintf( _n( '%d order still has this status. Move it to another status before deleting.', '%d orders still have this status. Move them to another status before deleting.', $count, 'exivon-custom-order-statuses-for-woocommerce' ), $count )
 			);
 		}
 		$this->statuses = array_values(
@@ -336,7 +336,7 @@ class Manager {
 	public function bulk_actions( $actions ) {
 		foreach ( $this->statuses as $status ) {
 			/* translators: %s: status label. */
-			$actions[ 'mark_' . $status['key'] ] = sprintf( __( 'Change status to %s', 'woo-add-order-status' ), $status['label'] );
+			$actions[ 'mark_' . $status['key'] ] = sprintf( __( 'Change status to %s', 'exivon-custom-order-statuses-for-woocommerce' ), $status['label'] );
 		}
 		return $actions;
 	}
